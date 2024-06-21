@@ -1,0 +1,24 @@
+stages:
+  - build
+
+before_script:
+  - echo "$DOCKER_REGISTRY_PASS" | docker login $DOCKER_INTERNAL_REGISTRY --username $DOCKER_REGISTRY_USER --password-stdin 
+  - echo "$DOCKER_REGISTRY_PASS" | docker login $DOCKER_REGISTRY --username $DOCKER_REGISTRY_USER --password-stdin
+
+build-cam-evo:
+  stage: build
+  variables:
+    TARGET_NAME: "camunda"
+    IMAGE_NAME: "cam-evo"
+    TARGET_VERS: "1.0.$CI_PIPELINE_ID"
+  rules:
+    - allow_failure: true
+      when: manual
+  tags:
+    - docker
+  script:
+    - docker build --no-cache -t $DOCKER_REGISTRY/$IMAGE_NAME:$TARGET_VERS 
+      --build-arg TARGET_NAME=$TARGET_NAME --build-arg TARGET_VERS=$TARGET_VERS --build-arg IMAGE_NAME=$IMAGE_NAME .
+    - docker tag $DOCKER_REGISTRY/$IMAGE_NAME:$TARGET_VERS $DOCKER_INTERNAL_REGISTRY/$TARGET_NAME/$IMAGE_NAME:$TARGET_VERS.$CI_PIPELINE_ID
+    - docker push $DOCKER_INTERNAL_REGISTRY/$TARGET_NAME/$IMAGE_NAME:$TARGET_VERS.$CI_PIPELINE_ID
+    - echo "Build completed $DOCKER_INTERNAL_REGISTRY/$TARGET_NAME/$IMAGE_NAME:$TARGET_VERS.$CI_PIPELINE_ID"

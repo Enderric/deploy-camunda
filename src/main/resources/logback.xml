@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false" scan="true" scanPeriod="30 seconds">
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="grayLog" class="de.siegmar.logbackgelf.GelfUdpAppender">
+        <graylogHost>data2.ru-central1.internal</graylogHost>
+        <graylogPort>12201</graylogPort>
+        <maxChunkSize>20000</maxChunkSize>
+        <compressionMethod>NONE</compressionMethod>
+        <encoder class="de.siegmar.logbackgelf.GelfEncoder">
+            <originHost></originHost>
+            <includeLevelName>true</includeLevelName>
+            <includeRootCauseData>true</includeRootCauseData>
+            <includeKeyValues>true</includeKeyValues>
+            <includeMdcData>true</includeMdcData>
+            <shortPatternLayout class="ch.qos.logback.classic.PatternLayout">
+                <pattern>"%m%nopex"</pattern>
+            </shortPatternLayout>
+            <fullPatternLayout class="ch.qos.logback.classic.PatternLayout">
+                <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg%n</pattern>
+            </fullPatternLayout>
+            <staticField>application_name:camunda</staticField>
+            <staticField>environment:dev</staticField>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="console"/>
+        <appender-ref ref="grayLog"/>
+    </root>
+
+</configuration>

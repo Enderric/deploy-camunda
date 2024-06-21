@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" id="Definitions_0uc7sh9" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.20.0">
+  <bpmn:collaboration id="Collaboration_10rhz6t">
+    <bpmn:participant id="workflow_v1" name="evo_workflow" processRef="evo_workflow" />
+    <bpmn:group id="Group_1vofbj9" categoryValueRef="CategoryValue_0endv3r" />
+    <bpmn:group id="Group_0x3t0to" categoryValueRef="CategoryValue_1865hcr" />
+  </bpmn:collaboration>
+  <bpmn:process id="evo_workflow" name="evo_workflow" isExecutable="true" camunda:versionTag="1.5" camunda:historyTimeToLive="P30D">
+    <bpmn:laneSet id="LaneSet_1xbr92f">
+      <bpmn:lane id="Lane_0tvrcg8">
+        <bpmn:flowNodeRef>evo_service_classification_v1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>evo_preprocessing_v1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_0wlhvth</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>evo_send_result_v1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>evo_normalization_v1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_0j9w2i0</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>evo_package_validation_v1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExclusiveGateway_1yo71wj</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_0uyzdsq</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>evo_prepare_result_v1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExclusiveGateway_0rdhedm</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>evo_custom_extraction_v1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>evo_get_content_text_v1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>evo_service_mark_v1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_0ao18wc</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>evo_atom_v1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>evo_prepare_data_sources_v1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>evo_document_segmentation_v1</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:sequenceFlow id="Flow_0lvrq9m" sourceRef="evo_send_result_v1" targetRef="EndEvent_0wlhvth" />
+    <bpmn:sequenceFlow id="Flow_0ns1flh" sourceRef="Gateway_0j9w2i0" targetRef="evo_normalization_v1" />
+    <bpmn:sequenceFlow id="Flow_1223bny" sourceRef="evo_normalization_v1" targetRef="evo_package_validation_v1" />
+    <bpmn:sequenceFlow id="Flow_1sz4xwm" sourceRef="evo_package_validation_v1" targetRef="ExclusiveGateway_1yo71wj" />
+    <bpmn:sequenceFlow id="SequenceFlow_14dupo2" name="Да" sourceRef="ExclusiveGateway_1yo71wj" targetRef="evo_service_mark_v1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.hasVariable("verification_use") == true &amp;&amp; verification_use == "True"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1npq8y2" sourceRef="evo_service_mark_v1" targetRef="Gateway_0ao18wc" />
+    <bpmn:sequenceFlow id="Flow_1w2gu25" name="Нет" sourceRef="Gateway_0ao18wc" targetRef="Gateway_0uyzdsq" />
+    <bpmn:sequenceFlow id="SequenceFlow_0e37n8k" name="Нет" sourceRef="ExclusiveGateway_1yo71wj" targetRef="Gateway_0uyzdsq" />
+    <bpmn:sequenceFlow id="SequenceFlow_1s2zbj3" sourceRef="evo_prepare_result_v1" targetRef="evo_send_result_v1">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property />
+          <camunda:property />
+        </camunda:properties>
+      </bpmn:extensionElements>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1o4rhrq" sourceRef="Gateway_0uyzdsq" targetRef="evo_prepare_result_v1" />
+    <bpmn:sequenceFlow id="Flow_0qhyw2j" sourceRef="evo_atom_v1" targetRef="Gateway_0j9w2i0" />
+    <bpmn:sequenceFlow id="SequenceFlow_1vkz52i" name="Нет" sourceRef="ExclusiveGateway_0rdhedm" targetRef="Gateway_0j9w2i0" />
+    <bpmn:sequenceFlow id="SequenceFlow_17dhkpq" name="Да" sourceRef="ExclusiveGateway_0rdhedm" targetRef="evo_atom_v1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.hasVariable("atom_use") == true &amp;&amp; atom_use == "True"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_10va35z" sourceRef="evo_custom_extraction_v1" targetRef="ExclusiveGateway_0rdhedm" />
+    <bpmn:sequenceFlow id="Flow_0rjson8" sourceRef="evo_get_content_text_v1" targetRef="evo_custom_extraction_v1" />
+    <bpmn:sequenceFlow id="Flow_0pg0ga3" name="Да" sourceRef="Gateway_0ao18wc" targetRef="evo_get_content_text_v1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.hasVariable("retrecognize") == true &amp;&amp; retrecognize == 1}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1aa8l26" sourceRef="evo_document_segmentation_v1" targetRef="evo_prepare_data_sources_v1" />
+    <bpmn:sequenceFlow id="Flow_1n4tkxd" sourceRef="evo_service_classification_v1" targetRef="evo_document_segmentation_v1" />
+    <bpmn:sequenceFlow id="SequenceFlow_1gbnbb7" sourceRef="evo_preprocessing_v1" targetRef="evo_service_classification_v1" />
+    <bpmn:sequenceFlow id="SequenceFlow_0nuwsgw" sourceRef="StartEvent_1" targetRef="evo_preprocessing_v1" />
+    <bpmn:callActivity id="evo_service_classification_v1" name="Классифицировать документы" camunda:asyncBefore="true" calledElement="evo_service_classification_0000_process" camunda:calledElementBinding="deployment">
+      <bpmn:extensionElements>
+        <camunda:in businessKey="#{execution.processBusinessKey}" />
+        <camunda:in source="process_name" target="process_name" />
+        <camunda:in source="package" target="package" />
+        <camunda:out source="package" target="package" />
+        <camunda:in source="external_task_priority" target="external_task_priority" />
+        <camunda:in source="package_id" target="package_id" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1gbnbb7</bpmn:incoming>
+      <bpmn:outgoing>Flow_1n4tkxd</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:serviceTask id="evo_preprocessing_v1" name="Выполнить предобработку" camunda:asyncBefore="true" camunda:type="external" camunda:topic="evo_preprocessing" camunda:taskPriority="#{external_task_priority}">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property />
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0nuwsgw</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1gbnbb7</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:startEvent id="StartEvent_1" name="Запрос на распонавание">
+      <bpmn:extensionElements>
+        <camunda:executionListener event="end">
+          <camunda:script scriptFormat="javascript">execution.setVariables({"abbyy_response": ""});
+
+if (typeof(pim_use) == "undefined") {
+execution.setVariables({"pim_use": "False"});
+}
+if (typeof(abbyy_use) == "undefined") {
+execution.setVariables({"abbyy_use": "False"});
+}
+if (typeof(external_task_priority) == "undefined") {
+execution.setVariables({"external_task_priority": "50"});
+}
+if (typeof(external_task_priority) == "string") {
+execution.setVariables({"external_task_priority": Number(external_task_priority)})
+}</camunda:script>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>SequenceFlow_0nuwsgw</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="EndEvent_0wlhvth">
+      <bpmn:incoming>Flow_0lvrq9m</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="evo_send_result_v1" name="Отправить результат" camunda:asyncBefore="true" camunda:type="external" camunda:topic="evo_send_result" camunda:taskPriority="#{external_task_priority}">
+      <bpmn:incoming>SequenceFlow_1s2zbj3</bpmn:incoming>
+      <bpmn:outgoing>Flow_0lvrq9m</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="evo_normalization_v1" name="Выполнить нормализацию" camunda:asyncBefore="true" camunda:type="external" camunda:topic="evo_normalization" camunda:taskPriority="#{external_task_priority}">
+      <bpmn:incoming>Flow_0ns1flh</bpmn:incoming>
+      <bpmn:outgoing>Flow_1223bny</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_0j9w2i0">
+      <bpmn:incoming>SequenceFlow_1vkz52i</bpmn:incoming>
+      <bpmn:incoming>Flow_0qhyw2j</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ns1flh</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="evo_package_validation_v1" name="Валидировать пакет" camunda:asyncBefore="true" camunda:type="external" camunda:topic="evo_package_validation" camunda:taskPriority="#{external_task_priority}">
+      <bpmn:extensionElements />
+      <bpmn:incoming>Flow_1223bny</bpmn:incoming>
+      <bpmn:outgoing>Flow_1sz4xwm</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_1yo71wj" name="Модуль верификации?" default="SequenceFlow_0e37n8k">
+      <bpmn:incoming>Flow_1sz4xwm</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_14dupo2</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_0e37n8k</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="Gateway_0uyzdsq">
+      <bpmn:incoming>SequenceFlow_0e37n8k</bpmn:incoming>
+      <bpmn:incoming>Flow_1w2gu25</bpmn:incoming>
+      <bpmn:outgoing>Flow_1o4rhrq</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="evo_prepare_result_v1" name="Подготовить результат" camunda:asyncBefore="true" camunda:type="external" camunda:topic="evo_prepare_result" camunda:taskPriority="#{external_task_priority}">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="set_out_format">
+            <camunda:script scriptFormat="javascript">if (typeof(out_format_name) != "undefined") {out_format_name} 
+else {''}</camunda:script>
+          </camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1o4rhrq</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1s2zbj3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_0rdhedm" name="Познать силу АТОМа?" default="SequenceFlow_1vkz52i">
+      <bpmn:incoming>Flow_10va35z</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1vkz52i</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_17dhkpq</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="evo_custom_extraction_v1" name="Применить альтернативное извлечение" camunda:asyncBefore="true" camunda:type="external" camunda:topic="evo_custom_extraction" camunda:taskPriority="#{external_task_priority}">
+      <bpmn:incoming>Flow_0rjson8</bpmn:incoming>
+      <bpmn:outgoing>Flow_10va35z</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="evo_get_content_text_v1" name="Извлечь контент из текста" camunda:asyncBefore="true" camunda:type="external" camunda:topic="evo_get_content_text" camunda:taskPriority="#{external_task_priority}">
+      <bpmn:incoming>Flow_0pg0ga3</bpmn:incoming>
+      <bpmn:incoming>Flow_0gep3jt</bpmn:incoming>
+      <bpmn:outgoing>Flow_0rjson8</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:callActivity id="evo_service_mark_v1" name="Модуль верификации" camunda:asyncBefore="true" calledElement="evo_service_mark_0000" camunda:calledElementBinding="deployment">
+      <bpmn:extensionElements>
+        <camunda:in businessKey="#{execution.processBusinessKey}" />
+        <camunda:out source="retrecognize" target="retrecognize" />
+        <camunda:in source="package_id" target="package_id" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_14dupo2</bpmn:incoming>
+      <bpmn:outgoing>Flow_1npq8y2</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:exclusiveGateway id="Gateway_0ao18wc" name="Повторная классификация?" default="Flow_1w2gu25">
+      <bpmn:incoming>Flow_1npq8y2</bpmn:incoming>
+      <bpmn:outgoing>Flow_1w2gu25</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0pg0ga3</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:callActivity id="evo_atom_v1" name="Подсистема АТОМ" camunda:asyncBefore="true" calledElement="evo_atom">
+      <bpmn:extensionElements>
+        <camunda:in source="external_task_priority" target="external_task_priority" />
+        <camunda:in businessKey="#{execution.processBusinessKey}" />
+        <camunda:in source="package_id" target="package_id" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_17dhkpq</bpmn:incoming>
+      <bpmn:outgoing>Flow_0qhyw2j</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_0gep3jt" sourceRef="evo_prepare_data_sources_v1" targetRef="evo_get_content_text_v1" />
+    <bpmn:serviceTask id="evo_prepare_data_sources_v1" name="Подготовить источники данных" camunda:asyncBefore="true" camunda:type="external" camunda:topic="evo_prepare_data_sources" camunda:taskPriority="#{external_task_priority}">
+      <bpmn:incoming>Flow_1aa8l26</bpmn:incoming>
+      <bpmn:outgoing>Flow_0gep3jt</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="evo_document_segmentation_v1" name="Выполнить сегментацию" camunda:asyncBefore="true" camunda:type="external" camunda:topic="evo_document_segmentation" camunda:taskPriority="#{external_task_priority}">
+      <bpmn:incoming>Flow_1n4tkxd</bpmn:incoming>
+      <bpmn:outgoing>Flow_1aa8l26</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmn:message id="Message_012ybw5" name="Message_0jpl6ho" />
+  <bpmn:category id="Category_0pjx8di">
+    <bpmn:categoryValue id="CategoryValue_0endv3r" value="Станция верификации" />
+  </bpmn:category>
+  <bpmn:escalation id="Escalation_03qlbv8" />
+  <bpmn:category id="Category_1m5nepb">
+    <bpmn:categoryValue id="CategoryValue_1865hcr" value="АТОМ" />
+  </bpmn:category>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_10rhz6t">
+      <bpmndi:BPMNShape id="Participant_12ycs5z_di" bpmnElement="workflow_v1" isHorizontal="true" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="160" y="80" width="3040" height="640" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0tvrcg8_di" bpmnElement="Lane_0tvrcg8" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="3010" height="640" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_10v1qmx_di" bpmnElement="evo_service_classification_v1">
+        <dc:Bounds x="530" y="351" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_0hh5292_di" bpmnElement="evo_preprocessing_v1" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="360" y="351" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="252" y="373" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="234" y="416" width="73" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0wlhvth_di" bpmnElement="EndEvent_0wlhvth">
+        <dc:Bounds x="3012" y="373" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1klqwbx_di" bpmnElement="evo_send_result_v1">
+        <dc:Bounds x="2860" y="351" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_051xayq" bpmnElement="evo_normalization_v1">
+        <dc:Bounds x="1850" y="351" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0j9w2i0_di" bpmnElement="Gateway_0j9w2i0" isMarkerVisible="true">
+        <dc:Bounds x="1695" y="366" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1cdede0_di" bpmnElement="evo_package_validation_v1">
+        <dc:Bounds x="1990" y="351" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_1yo71wj_di" bpmnElement="ExclusiveGateway_1yo71wj" isMarkerVisible="true">
+        <dc:Bounds x="2145" y="366" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2135" y="328" width="76" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1nis5eg_di" bpmnElement="Gateway_0uyzdsq" isMarkerVisible="true">
+        <dc:Bounds x="2575" y="366" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_058p2cp_di" bpmnElement="evo_prepare_result_v1" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="2680" y="351" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_0rdhedm_di" bpmnElement="ExclusiveGateway_0rdhedm" isMarkerVisible="true">
+        <dc:Bounds x="1395" y="366" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1387" y="338" width="69" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1p011w7_di" bpmnElement="evo_custom_extraction_v1" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="1170" y="351" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1bapjh3_di" bpmnElement="evo_get_content_text_v1" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="1020" y="351" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="CallActivity_1juhhrd_di" bpmnElement="evo_service_mark_v1">
+        <dc:Bounds x="2360" y="500" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0ao18wc_di" bpmnElement="Gateway_0ao18wc" isMarkerVisible="true">
+        <dc:Bounds x="2575" y="515" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2617" y="543" width="86" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_180xlui_di" bpmnElement="evo_atom_v1">
+        <dc:Bounds x="1520" y="500" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1n59mdq" bpmnElement="evo_prepare_data_sources_v1">
+        <dc:Bounds x="860" y="351" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0aiumy0_di" bpmnElement="evo_document_segmentation_v1">
+        <dc:Bounds x="700" y="351" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0lvrq9m_di" bpmnElement="Flow_0lvrq9m">
+        <di:waypoint x="2960" y="391" />
+        <di:waypoint x="3012" y="391" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ns1flh_di" bpmnElement="Flow_0ns1flh">
+        <di:waypoint x="1745" y="391" />
+        <di:waypoint x="1850" y="391" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1223bny_di" bpmnElement="Flow_1223bny">
+        <di:waypoint x="1950" y="391" />
+        <di:waypoint x="1990" y="391" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1sz4xwm_di" bpmnElement="Flow_1sz4xwm">
+        <di:waypoint x="2090" y="391" />
+        <di:waypoint x="2145" y="391" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_14dupo2_di" bpmnElement="SequenceFlow_14dupo2">
+        <di:waypoint x="2170" y="416" />
+        <di:waypoint x="2170" y="540" />
+        <di:waypoint x="2360" y="540" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2193" y="518" width="14" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1npq8y2_di" bpmnElement="Flow_1npq8y2">
+        <di:waypoint x="2460" y="540" />
+        <di:waypoint x="2575" y="540" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1w2gu25_di" bpmnElement="Flow_1w2gu25">
+        <di:waypoint x="2600" y="515" />
+        <di:waypoint x="2600" y="416" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2610" y="421" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0e37n8k_di" bpmnElement="SequenceFlow_0e37n8k">
+        <di:waypoint x="2195" y="391" />
+        <di:waypoint x="2575" y="391" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2220" y="373" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1s2zbj3_di" bpmnElement="SequenceFlow_1s2zbj3">
+        <di:waypoint x="2780" y="391" />
+        <di:waypoint x="2860" y="391" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1o4rhrq_di" bpmnElement="Flow_1o4rhrq">
+        <di:waypoint x="2625" y="391" />
+        <di:waypoint x="2680" y="391" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qhyw2j_di" bpmnElement="Flow_0qhyw2j">
+        <di:waypoint x="1620" y="540" />
+        <di:waypoint x="1720" y="540" />
+        <di:waypoint x="1720" y="416" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1vkz52i_di" bpmnElement="SequenceFlow_1vkz52i">
+        <di:waypoint x="1445" y="391" />
+        <di:waypoint x="1695" y="391" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1478" y="373" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_17dhkpq_di" bpmnElement="SequenceFlow_17dhkpq">
+        <di:waypoint x="1420" y="416" />
+        <di:waypoint x="1420" y="540" />
+        <di:waypoint x="1520" y="540" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1442" y="518" width="14" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10va35z_di" bpmnElement="Flow_10va35z">
+        <di:waypoint x="1270" y="391" />
+        <di:waypoint x="1395" y="391" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rjson8_di" bpmnElement="Flow_0rjson8">
+        <di:waypoint x="1120" y="391" />
+        <di:waypoint x="1170" y="391" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0pg0ga3_di" bpmnElement="Flow_0pg0ga3">
+        <di:waypoint x="2600" y="565" />
+        <di:waypoint x="2600" y="660" />
+        <di:waypoint x="1070" y="660" />
+        <di:waypoint x="1070" y="431" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2623" y="590" width="14" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1aa8l26_di" bpmnElement="Flow_1aa8l26">
+        <di:waypoint x="800" y="391" />
+        <di:waypoint x="860" y="391" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1n4tkxd_di" bpmnElement="Flow_1n4tkxd">
+        <di:waypoint x="630" y="391" />
+        <di:waypoint x="700" y="391" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1gbnbb7_di" bpmnElement="SequenceFlow_1gbnbb7">
+        <di:waypoint x="460" y="391" />
+        <di:waypoint x="530" y="391" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0nuwsgw_di" bpmnElement="SequenceFlow_0nuwsgw">
+        <di:waypoint x="288" y="391" />
+        <di:waypoint x="360" y="391" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gep3jt_di" bpmnElement="Flow_0gep3jt">
+        <di:waypoint x="960" y="391" />
+        <di:waypoint x="1020" y="391" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Group_0x3t0to_di" bpmnElement="Group_0x3t0to" bioc:stroke="rgb(142, 36, 170)" bioc:fill="rgb(225, 190, 231)">
+        <dc:Bounds x="1357" y="430" width="445" height="190" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1367" y="436" width="30" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Group_1vofbj9_di" bpmnElement="Group_1vofbj9" bioc:stroke="rgb(142, 36, 170)" bioc:fill="rgb(225, 190, 231)">
+        <dc:Bounds x="2240" y="430" width="300" height="190" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2245" y="444" width="70" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

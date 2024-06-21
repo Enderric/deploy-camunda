@@ -1,0 +1,37 @@
+spring.datasource.url: jdbc:postgresql://pg-cam-evo:5432/cam-evo
+spring.datasource.driverClassName: org.postgresql.Driver
+spring.datasource.username: cam-evo
+spring.datasource.password: Z6Wt9rC[h8aJ
+# logging:
+#   level:
+#     root: INFO
+#     ctrlops.cam.bpm: DEBUG
+camunda.bpm.admin-user:
+  id: demo
+  password: demo
+camunda.bpm:
+  database.schema-update: true
+  history-level: full
+  auto-deployment-enabled: true
+  job-executor:
+      deployment-aware: false
+  history:
+    cleanup:
+      batch-window-start-time: "19:30"
+      batch-window-end-time: "21:30"
+      strategy: removalTimeBased
+      removal-time-strategy: end
+      enabled: true
+    time-to-live: P30D
+    batch-operation:
+      history-time-to-live: P30D
+    job-log:
+      history-time-to-live: P30D
+camunda.bpm.metrics:
+    monitoringBeansXml: /camunda-monitoring-beans.xml
+    enabled: true
+    db-reporter-activate: true
+
+management.endpoints.web.exposure.include: "*"
+management.endpoint.health.show-details: always
+metrics.export.prometheus.enabled: true

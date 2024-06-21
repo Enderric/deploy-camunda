@@ -1,0 +1,1 @@
+CLASSPATH=$CATALINA_HOME/lib/*:$CATALINA_HOME/conf/logback/

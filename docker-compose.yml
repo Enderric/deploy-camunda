@@ -1,0 +1,30 @@
+version: '3.7'
+services:
+  camunda:
+    # image: camunda-bpm:1.0.5
+    build:
+      context: .
+      dockerfile: ./dockerfile    
+    container_name: cam-evo
+    ports:
+      - "8401:8080"
+      - "9404:9404"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://pg-cam-evo:5432/cam-evo
+      - SPRING_DATASOURCE_USERNAME=cam-evo
+      - SPRING_DATASOURCE_PASSWORD=Z6Wt9rC[h8aJ
+      - SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver
+    restart: unless-stopped
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:12.2
+    container_name: pg-cam-evo
+    environment:
+      POSTGRES_DB: cam-evo
+      POSTGRES_USER: cam-evo
+      POSTGRES_PASSWORD: Z6Wt9rC[h8aJ
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
